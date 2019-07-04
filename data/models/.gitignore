@@ -1,0 +1,4 @@
+# This Dir contains language models
+*
+# Except this file
+!.gitignore
