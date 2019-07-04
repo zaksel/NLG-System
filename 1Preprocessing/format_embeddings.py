@@ -5,6 +5,8 @@ output_enc = "./data/embedding/encoder.json"
 input_voc = "./data/embedding/vocab.txt"
 output_voc = "./data/embedding/vocab.bpe"
 
+enc_len = 50257
+
 def format_vocab(input_file, encoder, output_file):
     with open(input_file, "r", encoding="utf-8") as f:
         vocab_lines = f.readlines()
@@ -16,10 +18,42 @@ def format_vocab(input_file, encoder, output_file):
             line = line.replace("\n","")
             frags = line.split(" ")
 
-            if frags[0] in data and frags[1] in data and frags[0]+frags[1] in data:
-                f.write(line+"\n")
+            pre = frags[0]
+            post = frags[1]
+            full = pre + post
+
+            #I hate myself
+            if pre in data:
+                if pre in data:
+                    if full in data:
+                        f.write(line + "\n")
+                    elif "\u0120" + full in data:
+                        f.write("\u0120" + line + "\n")
+                elif "\u0120" + pre in data:
+                    if full in data:
+                        f.write("\u0120" + line + "\n")
+                    elif "\u0120" + full in data:
+                        f.write("\u0120" + line + "\n")
+            elif "\u0120" + pre in data:
+                if pre in data:
+                    if full in data:
+                        f.write("\u0120" + line + "\n")
+                    elif "\u0120" + full in data:
+                        f.write("\u0120" + line + "\n")
+                elif "\u0120" + pre in data:
+                    if full in data:
+                        f.write("\u0120" + line + "\n")
+                    elif "\u0120" + full in data:
+                        f.write("\u0120" + line + "\n")
             else:
-                f.write("\u0120" + line + "\n")
+                print("Missing Fragment in encoder.json. Skipped:    " + line)
+
+
+            #nicer but what if fragments are not anymore in encoder.json?
+            # if frags[0] in data and frags[1] in data and frags[0]+frags[1] in data:
+            #     f.write(line+"\n")
+            # else:
+            #     f.write("\u0120" + line + "\n")
 
 
 #numerate and save dict to json
@@ -31,8 +65,8 @@ def format_encoder(input_file,output_file):
         text = f.read()
 
     lines = text.split("\n")
-    for line in lines:
-        token = line.split(" ")[0]
+    for i in range(0,enc_len-1):
+        token = lines[i].split(" ")[0]
         token = token.replace("\\u0120","\u0120") #Be careful hack
         if "\u0120" in token:
             token = token.split("\u0120")
@@ -42,6 +76,7 @@ def format_encoder(input_file,output_file):
     for token in tokens:
         dict[token] = count
         count += 1
+    dict["<|endoftext|>"] = enc_len-1
     json_dict = json.dumps(dict)
 
     with open(output_file, "w+") as f:
