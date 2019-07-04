@@ -4,7 +4,7 @@ from tika import parser
 import os, tqdm
 
 pdf_dir = "./data/training/PDF" #folder to Trainingdata
-output_file = "./data/trainingsdaten.txt"
+output_file = "./data/training/trainingsdaten.txt"
 
 num_words=0
 num_chars=0

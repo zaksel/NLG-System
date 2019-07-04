@@ -25,8 +25,8 @@ Use subword nmt by Rico Sennrich to create new Byte Pair Encoding for your Langu
 
 #### Create .npz
 If you don't want to encode your Trainingdata on every run, you can save it encoded with numpy savez and load from that file.
-> python 1Preprocessing\encode.py ..\Trainingsdaten trainingsdaten.npz --model_name ISW_Model
-    
+> python 1Preprocessing\pre_encode.py .\data\training\PDF .\data\training\trainingsdaten.npz --model_name ISW_Model
+ 
 ## Training (based on nshepperd)
 
 ## Backend (based on OpenAi)
