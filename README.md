@@ -4,6 +4,8 @@ A natural language generation system to generate technical docs
 This code uses [OpenAi gpt-2](https://github.com/openai/gpt-2)
 and also [finetuning from nshepperd](https://github.com/nshepperd/gpt-2/tree/finetuning)
 ## Preprocessing
+
+<details>
 #### Download Model with:
 Available are Modells "117M" and "354M" adjust output_dir in script!
 > python 1Preprocessing\download_model.py 117M
@@ -26,7 +28,8 @@ Use subword nmt by Rico Sennrich to create new Byte Pair Encoding for your Langu
 #### Create .npz
 If you don't want to encode your Trainingdata on every run, you can save it encoded with numpy savez and load from that file.
 > python 1Preprocessing\pre_encode.py .\data\training\PDF .\data\training\trainingsdaten.npz --model_name ISW_Model
- 
+</details>
+    
 ## Training (based on nshepperd)
 
 ## Backend (based on OpenAi)
