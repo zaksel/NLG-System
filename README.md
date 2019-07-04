@@ -33,7 +33,7 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
  
 ## Training (based on nshepperd)
 <details>
-<summary>Steps to train your own model<summary>
+<summary>Steps to train your own model</summary>
 
 1. We recommend to parse your file into single .txt (see Preprocessing)
 2. Pre-Encode to npz (recommended see Preprocessing)
