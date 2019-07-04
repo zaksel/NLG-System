@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-# Usage:
-#  set PYTHONPATH=%cd%\src
-#  python encode.py <file|directory|glob> /path/to/output.npz
-#  python encode.py ..\Trainingsdaten trainingsdaten.npz --model_name ISW_Model
 import argparse
 import numpy as np
 
@@ -31,4 +26,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-#python -m 1Preprocessing.pre_encode.py .\data\training\trainingsdaten.txt .\data\training\trainingsdaten.npz --model_name ISW_Model
