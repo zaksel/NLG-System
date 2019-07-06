@@ -53,11 +53,22 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
         * model.ckpt.meta
 
 11. your model is ready to use. If you want to see some stats on tensorboard use:
-    > tensorboard  --logdir=data/training/checkpoint
+    > tensorboard  --logdir=data/training/run1/checkpoint
 
 </details>
 
 ## Backend (based on OpenAi)
 
 ## Frontend
+<details>
+<summary>How to use the Word-Ad-In</summary>
+
+Generated with Yeoman-Generator for Office-Add-ins
+Edit React App in 4Fronend/src/taskpane/components
+
+To sideload your Add-In in Word use the following command inside of directory 4Frontend
+> npm start
+
+Open  Start > Show TDTG > Enter your Inputs and Settings > click generate
+</details>
 
