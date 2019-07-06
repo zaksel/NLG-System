@@ -61,14 +61,22 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
 
 ## Frontend
 <details>
-<summary>How to use the Word-Ad-In</summary>
+<summary>How to use the Word-Add-In</summary>
 
 Generated with Yeoman-Generator for Office-Add-ins
+
 Edit React App in 4Fronend/src/taskpane/components
 
 To sideload your Add-In in Word use the following command inside of directory 4Frontend
-> npm start
+> npm run start
+
+and
+
+>npm run stop
 
 Open  Start > Show TDTG > Enter your Inputs and Settings > click generate
+
+Wenn Änderungen, die Sie am Manifest vorgenommen haben, z. B. Dateinamen von Symbolen für Schaltflächen im Menüband anscheinend nicht wirksam werden, löschen Sie den Office-Cache auf Ihrem Computer.
+Löschen des Inhalts des Ordners %LOCALAPPDATA%\Microsoft\Office\16.0\Wef\
 </details>
 
