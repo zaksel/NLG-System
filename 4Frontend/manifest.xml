@@ -2,6 +2,8 @@
 <OfficeApp
           xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+          xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
           xsi:type="TaskPaneApp">
 
   <!-- Begin Basic Settings: Add-in metadata, used for all versions of Office unless override provided. -->
@@ -129,12 +131,12 @@
       <!-- ShortStrings max characters==125. -->
       <bt:ShortStrings>
         <bt:String id="TDTG.TaskpaneButton.Label" DefaultValue="Show TDTG" />
-        <bt:String id="TDTG.Group1Label" DefaultValue="Commands Group" />
+        <bt:String id="TDTG.Group1Label" DefaultValue="NLG" />
         <bt:String id="TDTG.GetStarted.Title" DefaultValue="Get started with TDTG!" />
       </bt:ShortStrings>
       <!-- LongStrings max characters==250. -->
       <bt:LongStrings>
-        <bt:String id="TDTG.TaskpaneButton.Tooltip" DefaultValue="Click to Show a TDTG" />
+        <bt:String id="TDTG.TaskpaneButton.Tooltip" DefaultValue="Click to Show Technical Document Text Generation Add-In based on NLG" />
         <bt:String id="TDTG.GetStarted.Description" DefaultValue="TDTG loaded succesfully. Go to the Starttab and click the 'Show TDTG' button to get started." />
       </bt:LongStrings>
     </Resources>
