@@ -38,14 +38,9 @@
     align-items: center;
     -webkit-flex: 1 0 0;
     flex: 1 0 0;
-    padding: 10px 20px;
+    padding: 20px 20px;
  }
- 
- .ms-welcome__main > h2 {
-     width: 100%;
-     text-align: center;
- }
- 
+
  .ms-welcome__features {
      list-style-type: none;
      margin-top: 20px;
@@ -75,9 +70,13 @@
   cursor: pointer;
 }
 
-.ms-about__text {
+.tdtg-about__text {
     width: 80%;
     word-wrap: normal;
+}
+.tdtg-content_input {
+    width: 90%;
+    height: 70vh;
 }
 
 b {
