@@ -68,11 +68,11 @@ Generated with Yeoman-Generator for Office-Add-ins
 Edit React App in 4Fronend/src/taskpane/components
 
 To sideload your Add-In in Word use the following command inside of directory 4Frontend
-> npm run start
+> npm start
 
 and
 
->npm run stop
+>npm stop
 
 Open  Start > Show TDTG > Enter your Inputs and Settings > click generate
 

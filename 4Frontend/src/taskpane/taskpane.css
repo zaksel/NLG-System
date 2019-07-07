@@ -75,6 +75,11 @@
   cursor: pointer;
 }
 
+.ms-about__text {
+    width: 80%;
+    word-wrap: normal;
+}
+
 b {
     font-weight: bold;
 }
