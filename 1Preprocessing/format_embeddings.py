@@ -67,10 +67,9 @@ def format_encoder(input_file,output_file):
 
     lines = text.split("\n")
 
-    #first add basic ascii-chars
-    for char in string.printable:
-        print(char)
-        dict[char] = count
+    # add all unicode chars from latin and extensions on the top
+    for i in range(592):
+        dict[chr(i)] = count
         count += 1
 
     for i in range(count, enc_len-1):
