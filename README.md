@@ -2,7 +2,7 @@
 A natural language generation system to generate technical docs
 
 This code uses [OpenAi gpt-2](https://github.com/openai/gpt-2)
-and also [finetuning from nshepperd](https://github.com/nshepperd/gpt-2/tree/finetuning)
+and also [finetuning by nshepperd](https://github.com/nshepperd/gpt-2/tree/finetuning)
 ## Preprocessing
 <details>
 <summary>Things you can or should do before training.</summary>
@@ -20,11 +20,11 @@ Use subword-nmt by Rico Sennrich to create new Byte Pair Encoding for your Langu
     > python 1Preprocessing/format_embeddings.py
 4. Move encoder.json and vocab.bpe to your base language-model in directory models
 
-#### Convert Trainingdata PDFs to single txt
+#### Convert Trainingdata PDFs to txt
 1. Place PDFs in training/PDF
 2. Clean PDFs with own rules (regex, str.replace) in pdf_to_txt.py
-3. Use pdf_to_txt.py to parse PDFs to single txt-File (with Apache Tika)
-    > python -W ignore 1Preprocessing/pdf_to_txt.py
+3. Use pdf_to_txt.py to parse PDFs to txt-File (with Apache Tika)
+    > python 1Preprocessing/pdf_to_txt.py
 
 #### Create .npz
 If you don't want to encode your Trainingdata on every run, you can save it encoded with numpy savez and load from that file.
