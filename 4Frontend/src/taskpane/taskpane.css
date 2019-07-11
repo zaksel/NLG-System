@@ -56,27 +56,33 @@
      margin-right: 10px;
  }
  
- .ms-welcome__action.ms-Button--hero {
-     margin-top: 30px;
- }
- 
-.ms-Button.ms-Button--hero .ms-Button-label {
-  color: #0078d7;
-}
 
-.ms-Button.ms-Button--hero:hover .ms-Button-label,
-.ms-Button.ms-Button--hero:focus .ms-Button-label{
-  color: #005a9e;
-  cursor: pointer;
-}
 
 .tdtg-about__text {
     width: 80%;
     word-wrap: normal;
 }
-.tdtg-content_input {
+.tdtg-content__input {
     width: 90%;
     height: 70vh;
+}
+
+ .tdtg-content__button {
+     margin-top: 30px;
+ }
+
+.tdtg-content__button .ms-Button-label {
+  color: #0078d7;
+}
+
+.tdtg-content__button:hover .ms-Button-label,
+.tdtg-content__button:focus .ms-Button-label{
+  color: #005a9e;
+  cursor: pointer;
+}
+
+.tdtg-content__spinner{
+    visibility: collapse;
 }
 
 b {
