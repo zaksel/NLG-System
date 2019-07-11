@@ -1,4 +1,4 @@
-import json, string
+import json
 
 input_enc = "./data/embedding/encoder.txt"
 output_enc = "./data/embedding/encoder.json"
@@ -12,8 +12,8 @@ def format_vocab(input_file, encoder, output_file):
         vocab_lines = f.readlines()
     with open(encoder, "r", encoding="utf-8") as f:
         data = json.load(f)
-    with open(output_file, "w+", encoding="utf-8") as f:
-        f.write("#version: 0.2")
+    with open(output_file, "w+", encoding="utf-8", newline='') as f:
+        f.write("#version: 0.2\n")
         for line in vocab_lines:
             line = line.replace("</w>","")
             line = line.replace("\n","")
@@ -67,8 +67,8 @@ def format_encoder(input_file,output_file):
 
     lines = text.split("\n")
 
-    # add all unicode chars from latin and extensions on the top
-    for i in range(592):
+    # add all unicode chars from latin and extensions (592) on the top
+    for i in list(range(ord("!"), ord("~")+1))+list(range(ord("¡"), ord("¬")+1))+list(range(ord("®"), ord("ÿ")+1))+list(range(ord("Ā"), ord("Ń")+1)):
         dict[chr(i)] = count
         count += 1
 
@@ -76,7 +76,7 @@ def format_encoder(input_file,output_file):
         token = lines[i].split(" ")[0]
         if "\u0120" in token:
             token = token.split("\u0120")
-            token = "\u0120"+token[0]
+            token = "\u0120" + token[0]
         tokens.append(token)
     tokens.sort()
     for token in tokens:
