@@ -67,7 +67,7 @@ def sample_sequence(*, hparams, length, start_token=None, batch_size=None, conte
                 logits = top_p_logits(logits, p=top_p)
             else:
                 logits = top_k_logits(logits, k=top_k)
-            samples = tf.multinomial(logits, num_samples=1, output_dtype=tf.int32)
+            samples = tf.random.categorical(logits, num_samples=1, dtype=tf.int32)
             return [
                 tf.concat([past, next_outputs['presents']], axis=-2),
                 tf.squeeze(samples, axis=[1]),
