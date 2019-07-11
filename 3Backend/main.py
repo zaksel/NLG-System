@@ -1,7 +1,5 @@
-import sys
-
-from flask import Flask, render_template, request, redirect, Response, jsonify
-import random, json
+from flask import Flask, request, redirect, Response, jsonify
+from interactive_conditional_samples import Model
 
 app = Flask(__name__)
 
@@ -15,10 +13,10 @@ def output():
 def input():
     data = request.get_json(force=True)
     print("Got Message from Word Add-In", data)
-    input_word = data['word']
+    input_words = data['words']
 
     #call generation of text
-    output = "Verarbeitet " + input_word
+    output = model.generate("The house at the end of the road is")
 
     res = {"text": output}
     return jsonify(res)
@@ -31,4 +29,5 @@ def add_headers(response):
     return response
 
 if __name__ == '__main__':
+    model = Model()
     app.run(host='127.0.0.1', port=5000)
