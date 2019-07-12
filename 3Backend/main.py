@@ -13,13 +13,19 @@ def output():
 def input():
     data = request.get_json(force=True)
     print("Got Message from Word Add-In", data)
-    input_words = data['words']
 
     #call generation of text
-    output = model.generate("The house at the end of the road is")
+    output = model.generate(data['text'])
 
     res = {"text": output}
     return jsonify(res)
+
+
+@app.route('/settings', methods=['POST'])
+def settings():
+    data = request.get_json(force=True)
+    print("Got Settings from Word Add-In", data)
+
 
 #add response headers into our response
 @app.after_request

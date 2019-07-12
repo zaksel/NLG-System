@@ -6,39 +6,38 @@ export default class Content extends React.Component {
         return Word.run(async context => {
 
             let input = document.getElementById("input").value;
-            //process the inputs
-            let lines = input.split("\n");
-            let words =[];
-            lines.forEach(function (line, index) {
-                words.push(line)
-            });
-            let data = {"words":words};
+            if (input.length === 0) {
+                document.getElementById("input").value = "Please enter start of your text!"
+            }
+            else{
+                let data = {"text":input};
 
-            //send the inputs to backend
-            $.ajax({
-                type: "POST",
-                url: "http://127.0.0.1:5000/input",
-                data : JSON.stringify(data),
-                dataType: 'json',
-                beforeSend: function() {
-                    document.getElementById('button').style.visibility="collapse";
-                    document.getElementById('spinner').style.visibility="visible"
-                },
-                complete: function() {
-                    document.getElementById('button').style.visibility="visible";
-                    document.getElementById('spinner').style.visibility="collapse"
-                },
-                success : async function(res) {
-                    let text = res.text;
-                    let paras = text.split("\n");
-                    paras.forEach(function(paragraph) {
-                        const written = context.document.body.insertText(paragraph, Word.InsertLocation.end);
-                        written.font.color = "blue";
-                        const test = context.document.body.insertBreak("Line","End");
-                    });
-                    await context.sync();
-                }
-            });
+                //send the data to backend
+                $.ajax({
+                    type: "POST",
+                    url: "http://127.0.0.1:5000/input",
+                    data : JSON.stringify(data),
+                    dataType: 'json',
+                    beforeSend: function() {
+                        document.getElementById('button').style.visibility="collapse";
+                        document.getElementById('spinner').style.visibility="visible"
+                    },
+                    complete: function() {
+                        document.getElementById('button').style.visibility="visible";
+                        document.getElementById('spinner').style.visibility="collapse"
+                    },
+                    success : async function(res) {
+                        let text = res.text;
+                        let paras = text.split("\n");
+                        paras.forEach(function(paragraph) {
+                            const written = context.document.body.insertText(paragraph, Word.InsertLocation.end);
+                            written.font.color = "blue";
+                            const test = context.document.body.insertBreak("Line","End");
+                        });
+                        await context.sync();
+                    }
+                });
+            }
         });
     };
 
