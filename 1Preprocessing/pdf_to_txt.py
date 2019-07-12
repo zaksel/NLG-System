@@ -27,7 +27,7 @@ for path in tqdm.tqdm(paths):
         text = text.split(" ")
         text_clean = []
         for i in range(0, len(text)):
-            if all(31 < ord(char) < 127 for char in text[i]):   # Regex [ -~]
+            if all(31 < ord(char) < 128 for char in text[i]):   # Regex [ -~]
                 text_clean.append(text[i])
         text = " ".join(text_clean)
 
