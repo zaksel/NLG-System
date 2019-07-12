@@ -49,7 +49,6 @@ class Model(object):
             raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
 
         self.sess = tf.Session()
-        self.sess_debug = tf_debug.LocalCLIDebugWrapperSession(self.sess)
 
         self.context = tf.placeholder(tf.int32, [1, None])
         np.random.seed(seed)
@@ -70,6 +69,9 @@ class Model(object):
     def generate(self, raw_text):
         context_tokens = self.enc.encode(raw_text)
 
-        out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})[:, len(context_tokens):]   #alternative sess_debug for TFDBG
+        out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})[:, len(context_tokens):]
         text = raw_text + self.enc.decode(out[0])
         return text
+
+    def stop(self):
+        self.sess.close()
