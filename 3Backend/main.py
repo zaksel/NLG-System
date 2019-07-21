@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, Response, jsonify
-from interactive_conditional_samples import Model
+from generate_samples import Model
 
 app = Flask(__name__)
 
@@ -11,6 +11,7 @@ def output():
 
 @app.route('/input', methods=['POST'])
 def input():
+    global model
     data = request.get_json(force=True)
     print("Got Message from Word Add-In", data)
 
@@ -23,8 +24,22 @@ def input():
 
 @app.route('/settings', methods=['POST'])
 def settings():
+    global model
     data = request.get_json(force=True)
     print("Got Settings from Word Add-In", data)
+
+    #start new model with given params
+    model.stop()
+    del model
+    model = Model(model_name=data['model'],
+                  seed=int(data['seed']) if int(data['seed']) else None,
+                  length=int(data['len']),
+                  temperature=float(data['temp']),
+                  top_p=float(data['top_p']),
+                  lang_target=data['language'])
+
+    res = jsonify(success=True)
+    return res
 
 
 #add response headers into our response

@@ -15,7 +15,7 @@
      margin: 0;
      padding: 0;
  }
- 
+
  .ms-welcome__header {
     padding: 20px;
     padding-bottom: 30px;
@@ -45,17 +45,17 @@
      list-style-type: none;
      margin-top: 20px;
  }
- 
+
  .ms-welcome__features.ms-List .ms-ListItem {
      padding-bottom: 20px;
      display: -webkit-flex;
      display: flex;
  }
- 
+
  .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
      margin-right: 10px;
  }
- 
+
 
 
 .tdtg-about__text {
@@ -67,18 +67,8 @@
     height: 70vh;
 }
 
- .tdtg-content__button {
-     margin-top: 30px;
- }
-
-.tdtg-content__button .ms-Button-label {
-  color: #0078d7;
-}
-
-.tdtg-content__button:hover .ms-Button-label,
-.tdtg-content__button:focus .ms-Button-label{
-  color: #005a9e;
-  cursor: pointer;
+.tdtg-content__button {
+    margin-top: 30px;
 }
 
 .tdtg-content__spinner{
@@ -87,4 +77,12 @@
 
 b {
     font-weight: bold;
+}
+
+.tdtg-settings__elements{
+    margin: 20px;
+}
+
+.tdtg-instructions__text{
+    padding: 20px;
 }
