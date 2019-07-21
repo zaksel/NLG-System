@@ -11,6 +11,8 @@ and also [finetuning by nshepperd](https://github.com/nshepperd/gpt-2/tree/finet
 Available are Modells "117M" and "354M" (not tested) adjust output_dir in script!
 > python 1Preprocessing\download_model.py 117M
 
+Be careful we added a Language-identifier to the Hyperparams in h_params.json. Please add "h_params" = "en"
+
 #### Create encoder.json and vocab.bpe
 Use subword-nmt by Rico Sennrich to create new Byte Pair Encoding for your Language.
 1. Place a .txt File you want to extract embeddings from in data/embedding
@@ -52,7 +54,8 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
         * model.ckpt.index
         * model.ckpt.meta
 
-11. your model is ready to use. If you want to see some stats on tensorboard use:
+11. Adjust hparams.n_lang to your language
+12. your model is ready to use. If you want to see some stats on tensorboard use:
     > tensorboard  --logdir=data/training/iswTrain1/checkpoint
 
 </details>
