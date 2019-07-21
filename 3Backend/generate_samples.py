@@ -2,6 +2,7 @@ import json
 import os
 import numpy as np
 import tensorflow as tf
+import googletrans
 
 import sys
 sys.path.insert(0, '.\src')
@@ -34,19 +35,18 @@ class Model(object):
     def __init__(self,
                  model_name='117M',
                  seed=None,
-                 length=None,
+                 length=5, #None,
                  temperature=1,
-                 top_k=0, top_p=0.9):
+                 top_k=40, top_p=0.9,
+                 lang_target='de'):
 
         self.enc = encoder.get_encoder(model_name)
+        self.translator = googletrans.Translator()
         hparams = model.default_hparams()
         with open(os.path.join('./data/models', model_name, 'hparams.json')) as f:
             hparams.override_from_dict(json.load(f))
-
-        if length is None:
-            length = hparams.n_ctx // 2
-        elif length > hparams.n_ctx:
-            raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
+        self.lang_model = hparams.n_lang
+        self.lang_target = lang_target
 
         self.sess = tf.Session()
 
@@ -66,12 +66,40 @@ class Model(object):
         ckpt = tf.train.latest_checkpoint(os.path.join('./data/models', model_name))
         saver.restore(self.sess, ckpt)
 
-    def generate(self, raw_text):
-        context_tokens = self.enc.encode(raw_text)
+    def generate(self, input):
+        #Strategie 2 + Translation
+        input = self.transl(input, True, self.lang_target, self.lang_model)
+        #input = ["The best Thing", "Warranty", "10 Years", "regret", "car", "truck"]
+        out = np.array([[]])
+        for support in input:
+            context_tokens = self.enc.encode(self.enc.decode(out[0]) + " " + support)
+            out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
 
-        out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})[:, len(context_tokens):]
-        text = raw_text + self.enc.decode(out[0])
-        return text
+        output = self.enc.decode(out[0])
+        #output = ". ".join(output.split(".")[:-1])+"." #take only full sentences
+        output = self.transl(output, False, self.lang_model, self.lang_target)
+        return output
+
+        #Strategie 3
+        # supp_tokens = self.enc.encode("he said jail Wednesday")
+        # context_tokens = self.enc.encode(raw_text)
+        # while len(supp_tokens) > 0:
+        #     sample = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
+        #     if supp_tokens[0] in sample[0]:
+        #         print("used token: ", supp_tokens[0])
+        #         context_tokens.extend(sample[0])
+        #         supp_tokens.pop(0)
+        # text = self.enc.decode(context_tokens)
+        # return text
+
+    def transl(self, input, array, lang_in, lang_out):
+        if array:
+            translation = []
+            for ele in input:
+                translation.append(self.translator.translate(ele, src=lang_in, dest=lang_out).text)
+        else:
+            translation = self.translator.translate(input, src=lang_in, dest=lang_out).text
+        return translation
 
     def stop(self):
         self.sess.close()
