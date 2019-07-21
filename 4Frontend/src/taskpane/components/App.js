@@ -18,7 +18,6 @@ export default class App extends React.Component {
             <Settings/>
           </PivotItem>
           <PivotItem headerText="Instructions">
-            <Label>Learn how it works</Label>
             <Instructions/>
           </PivotItem>
           <PivotItem headerText="About">
