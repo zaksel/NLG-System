@@ -1,17 +1,17 @@
 import * as React from 'react';
-import {Button, ButtonType, Label, TextField, Spinner} from 'office-ui-fabric-react';
+import {PrimaryButton, TextField, Spinner} from 'office-ui-fabric-react';
 
+let input_text = "";
 export default class Content extends React.Component {
     click = async () => {
         return Word.run(async context => {
 
-            let input = document.getElementById("input").value;
-            if (input.length === 0) {
-                document.getElementById("input").value = "Please enter start of your text!"
+            let input = input_text.split("⚫");
+            if (input.length < 2) {
+                document.getElementById("input").value = "Please enter Words that support your text divided by Tabstopps!"
             }
             else{
                 let data = {"text":input};
-
                 //send the data to backend
                 $.ajax({
                     type: "POST",
@@ -41,13 +41,20 @@ export default class Content extends React.Component {
         });
     };
 
-
     render() {
+        //handle input in textfield, replace tabs
+        $('.tdtg-content__input').on('keydown', function(e) {
+            if (e.keyCode == 9) {
+                e.preventDefault();
+                document.getElementById('input').value=document.getElementById('input').value + " ⚫ ";
+             }
+        });
+
         return(
             <div class="ms-welcome__main">
-                <TextField className='tdtg-content__input' id="input" multiline resizable={false} rows={29}/>
-                <Button className='tdtg-content__button' id='button' iconProps={{ iconName: 'ChevronRight'}} onClick={this.click}>Generate!</Button>
-                <Spinner className='tdtg-content__spinner' id='spinner' label=" Thinking..." ariaLive="assertive" labelPosition="right" />
+                <TextField className='tdtg-content__input' id="input" multiline resizable={false} rows={29} defaultValue={input_text} onChanged={newValue => (input_text=newValue)}/>
+                <PrimaryButton className='tdtg-content__button' id='button' iconProps={{ iconName: 'ChevronRight'}} onClick={this.click}>Generate!</PrimaryButton>
+                <Spinner className='tdtg-content__spinner' id='spinner' label=" Thinking..." labelPosition="right" />
             </div>
         );
     }
