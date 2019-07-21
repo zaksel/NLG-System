@@ -60,8 +60,8 @@ def format_vocab(input_file, encoder, output_file):
 #numerate and save dict to json
 def format_encoder(input_file,output_file):
     dict={}
-    tokens=[]
-    count=0
+    count = 0
+    k = 0
     with open(input_file, "r", encoding="utf-8") as f:
         text = f.read()
 
@@ -72,23 +72,22 @@ def format_encoder(input_file,output_file):
         dict[chr(i)] = count
         count += 1
 
-    for i in range(count, enc_len-1):
-        token = lines[i].split(" ")[0]
+    while count < enc_len-1:
+        token = lines[k].split(" ")[0]
         if "\u0120" in token:
             token = token.split("\u0120")
             token = "\u0120" + token[0]
-        tokens.append(token)
-    tokens.sort()
-    for token in tokens:
-        if token not in dict:
+        if not token in dict:
             dict[token] = count
             count += 1
+        k += 1
 
     dict["<|endoftext|>"] = enc_len-1
 
     json_dict = json.dumps(dict)
     with open(output_file, "w+") as f:
         f.write(json_dict)
+
 
 if __name__ == '__main__':
     format_encoder(input_enc, output_enc)
