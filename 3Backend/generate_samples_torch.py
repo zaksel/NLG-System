@@ -1,6 +1,5 @@
 from pytorch_transformers import GPT2Tokenizer, GPT2LMHeadModel
 import torch
-from treelib import Node, Tree
 
 class Model(object):
     def __init__(self,
@@ -29,45 +28,32 @@ class Model(object):
             best_logits, best_indices = probabilities.topk(self.beam_width)
 
             #output
-            probs = best_logits.tolist()[0]
             ids = best_indices.tolist()[0]
-            words = self.tokenizer.convert_ids_to_tokens(ids)
-            return ids, words, probs
+            return ids
 
-        def beam_search(sent, sent_ids, supp_id):
-            # start creating tree and insert root
-            tree = Tree()
-            tree_id = 0
-            iterator = 0
-            tree.create_node(tag=sent, identifier=tree_id, data=sent_ids)
-
-            # iterate over leaves, get probs and insert them to tree
-            while iterator < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1):
-                poss_ids, poss_words, probs = get_probs(tree.get_node(iterator).data)
-                for id, word, prob in zip(poss_ids, poss_words, probs):
+        def beam_search(sent_ids, supp_id):
+            beams = [sent_ids]
+            i = 0
+            while len(beams) < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1):
+                poss_ids = get_probs(beams[i])
+                for id in poss_ids:
                     # append new possible tokens to tokens along the path
-                    sent_ids = torch.cat((tree.get_node(iterator).data, torch.tensor([[id]])), dim=1)
+                    sent_ids = torch.cat((beams[i], torch.tensor([[id]])), dim=1)
                     if id == supp_id:
                         print("Heureka")
                         return 1, sent_ids
-                    tree_id += 1
-                    tree.create_node(tag=word + "(" + str(round(prob * 100, 2)) + ")", identifier=tree_id,
-                                     data=sent_ids, parent=iterator)
-                iterator += 1
+                    beams.append(sent_ids)
+                i += 1
 
             print("Support not found: Do random Step")
-            return 0, tree.get_node(tree_id).data
-            #tree.show()
-            #print(tree.all_nodes_itr())
+            return 0, beams[i-1]
 
 
-
-        sent = input[0]
         sent_ids = torch.tensor(self.tokenizer.encode(input.pop(0))).unsqueeze(0)
         support = "a " + " ".join(input)
         supp_ids = self.tokenizer.encode(support)[1:]
         while len(supp_ids) > 0:
-            res, sent_ids = beam_search(sent, sent_ids, supp_ids[0])
+            res, sent_ids = beam_search(sent_ids, supp_ids[0])
             if res:
                 supp_ids.pop(0)
 
