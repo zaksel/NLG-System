@@ -21,8 +21,15 @@ for path in tqdm.tqdm(paths):
 
         #text = re.sub(".{17,}", "", text)  # delete long char-rows (>16) like links or delimiters (longest german wors are around 34 words see: Donau-Dampfschifffahrtsgesellschaft)
         #text = text.replace('-\n', '').replace('\n', ' ').replace('\r', ' ').replace('\0', ' ').replace('\t',' ').replace('..', ' ').replace('. .', ' ')  # replace everything we dont want with whitespace
-        text = re.sub('[^a-zA-ZäöüÄÖÜß .,-]+','',text)
-        text = re.sub("[ .-]{2,}", " ", text)  # eliminate double or more whitespaces,points,...
+        text = re.sub('[^a-zA-ZäöüÄÖÜß0-9 .,-]+',' ',text)
+
+
+        text = re.sub("[ ]{2,}", " ", text)  # eliminate double or more whitespaces
+        text = re.sub("[\. ]{2,}", ". ", text)  # eliminate double or more points
+        text = re.sub("(, ){2,}", " ", text)
+        text = re.sub("(- )","",text)
+        text = re.sub("[-]{2,}", " ", text)
+
 
         # split on whitespaces and process word by word
         # text = text.split(" ")
