@@ -1,11 +1,14 @@
+#Strategie 1 Beam-Search
 from pytorch_transformers import GPT2Tokenizer, GPT2LMHeadModel
 import torch
+import random
+import time
 
 class Model(object):
     def __init__(self,
                  model_name='117M',
-                 seed=None,
-                 beam_width=6, beam_depth=6,
+                 seed=1,
+                 beam_width=20, beam_depth=4,
                  lang_target='de'):
 
         self.model = GPT2LMHeadModel.from_pretrained('gpt2')
@@ -13,7 +16,7 @@ class Model(object):
 
         self.beam_width = beam_width
         self.beam_depth = beam_depth
-        self.seed = seed
+        random.seed = seed
 
     #gets array of words and performs beam search to connect them
     def generate(self, input):
@@ -41,28 +44,33 @@ class Model(object):
                     sent_ids = torch.cat((beams[i], torch.tensor([[id]])), dim=1)
                     if id == supp_id:
                         print("Heureka")
+                        #print(i)
                         return 1, sent_ids
                     beams.append(sent_ids)
                 i += 1
 
             print("Support not found: Do random Step")
-            return 0, beams[i-1]
+            return 0, beams[random.randrange(i)]
 
 
         sent_ids = torch.tensor(self.tokenizer.encode(input.pop(0))).unsqueeze(0)
         support = "a " + " ".join(input)
         supp_ids = self.tokenizer.encode(support)[1:]
         while len(supp_ids) > 0:
+            #start = time.time()
             res, sent_ids = beam_search(sent_ids, supp_ids[0])
+            #now = time.time()
             if res:
                 supp_ids.pop(0)
 
             #convert result from ids to string
+            #print(now-start)
             tokens = self.tokenizer.convert_ids_to_tokens(sent_ids.tolist()[0])
             print(self.tokenizer.convert_tokens_to_string(tokens))
 
 
-
 if __name__ == '__main__':
     model = Model()
-    model.generate(["My Name is Harry", "Potter", "met", "Voldemort", "battle" ,"was", "strong", "Hospital"])
+    #model.generate(["My Name is Harry", "Potter", "met", "Voldemort", "battle" ,"was", "strong", "Hospital"])
+    #model.generate(["The Institute for Controlling and Machine Tooling","University of Stuttgart","leader","on the field","Technology", "Production","Automation", "tomorrow", "innovative", "challenging","Product"])
+    model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals"])
