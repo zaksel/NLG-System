@@ -47,14 +47,14 @@ class Model(object):
             hparams.override_from_dict(json.load(f))
         self.lang_model = hparams.n_lang
         self.lang_target = lang_target
-
+        self.length = length
         self.sess = tf.Session()
 
         self.context = tf.placeholder(tf.int32, [1, None])
         np.random.seed(seed)
         tf.set_random_seed(seed)
         self.output = sample.sample_sequence(
-            hparams=hparams, length=length,
+            hparams=hparams, length=self.length,
             context=self.context,
             batch_size=1,
             temperature=temperature,
@@ -69,28 +69,25 @@ class Model(object):
     def generate(self, input):
         #Strategie 2 + Translation
         input = self.transl(input, True, self.lang_target, self.lang_model)
-        #input = ["The best Thing", "Warranty", "10 Years", "regret", "car", "truck"]
-        out = np.array([[]])
+
+        #do cut-off and insert
+        start_token = self.enc.encode(input.pop(0))
+        out = self.sess.run(self.output, feed_dict={self.context: [start_token]})
         for support in input:
             context_tokens = self.enc.encode(self.enc.decode(out[0]) + " " + support)
             out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
 
+        # add runs at the end to finish sentence
+        while True:
+            context_tokens = out[0]
+            out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
+            if 13 in out[0][-self.length:]:
+                break
+
         output = self.enc.decode(out[0])
-        #output = ". ".join(output.split(".")[:-1])+"." #take only full sentences
+        output = ".".join(output.split(".")[:-1]) + "."  # take only full sentences
         output = self.transl(output, False, self.lang_model, self.lang_target)
         return output
-
-        #Strategie 3
-        # supp_tokens = self.enc.encode("he said jail Wednesday")
-        # context_tokens = self.enc.encode(raw_text)
-        # while len(supp_tokens) > 0:
-        #     sample = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
-        #     if supp_tokens[0] in sample[0]:
-        #         print("used token: ", supp_tokens[0])
-        #         context_tokens.extend(sample[0])
-        #         supp_tokens.pop(0)
-        # text = self.enc.decode(context_tokens)
-        # return text
 
     def transl(self, input, array, lang_in, lang_out):
         if array:
