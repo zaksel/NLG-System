@@ -88,7 +88,7 @@ class Model(object):
                     # Convert inputs to PyTorch tensors
                     tokens_tensor = torch.LongTensor([indexed_tokens])
 
-                    # Predict all tokens
+                    # Predict tokens
                     with torch.no_grad():
                         predictions = self.model(tokens_tensor)
 
@@ -99,17 +99,12 @@ class Model(object):
                     tokenized_text[i] = predicted_token[0]
 
             text = ' '.join(tokenized_text)
-            text = text.replace(' ##', '')
+            text = text.replace(' ##', '').replace(' ,', ',').replace(' . ', ' ')
             print(text)
             return text
 
-
-        #out = np.array([[]])
         context_tokens = self.enc.encode(input.pop(0))
-        print(context_tokens)
         out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
-        print(out)
-
 
         for support in input:
             text = self.enc.decode(out[0]) + " [MASK] " + support
