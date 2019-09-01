@@ -1,14 +1,14 @@
-# Strategie 3 Search until fit
+# Strategie 3 Cut-off and Insert
 import json
 import os
 import numpy as np
 import tensorflow as tf
 import googletrans
+import time
 
 import sys
 sys.path.insert(0, '.\src')
 import model, sample, encoder
-
 
 class Model(object):
     """
@@ -32,9 +32,9 @@ class Model(object):
      overriding top_k if set to a value > 0. A good setting is 0.9.
     """
     def __init__(self,
-                 model_name='117M',
-                 seed=1,
-                 length=5,
+                 model_name='ISW_Model',
+                 seed=0,
+                 length=8,
                  temperature=1,
                  top_k=10, top_p=0,
                  lang_target='de'):
@@ -46,6 +46,7 @@ class Model(object):
             hparams.override_from_dict(json.load(f))
         self.lang_model = hparams.n_lang
         self.lang_target = lang_target
+        self.length = length
 
         self.sess = tf.Session()
 
@@ -53,7 +54,7 @@ class Model(object):
         np.random.seed(seed)
         tf.set_random_seed(seed)
         self.output = sample.sample_sequence(
-            hparams=hparams, length=length,
+            hparams=hparams, length=self.length,
             context=self.context,
             batch_size=1,
             temperature=temperature,
@@ -66,20 +67,43 @@ class Model(object):
         saver.restore(self.sess, ckpt)
 
     def generate(self, input):
-        context_tokens = self.enc.encode(input.pop(0))
-        supp_tokens = []
-        for supp in input:
-            supp_tokens.extend(self.enc.encode(supp))
-        while len(supp_tokens) > 0:
-            sample = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
-            if supp_tokens[0] in sample[0]:
-                print("used token: ", supp_tokens[0])
-                print(self.enc.decode(sample[0]))
-                context_tokens.extend(sample[0])
-                supp_tokens.pop(0)
-        text = self.enc.decode(context_tokens)
-        return text
+        #input = self.transl(input, True, self.lang_target, self.lang_model)
+
+        start_token = self.enc.encode(input.pop(0))
+        out = self.sess.run(self.output, feed_dict={self.context: [start_token]})
+        for support in input:
+            context_tokens = self.enc.encode(self.enc.decode(out[0]) + " " + support)
+            out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
+
+        #add runs at the end to finish sentence
+        while True:
+            context_tokens = out[0]
+            out = self.sess.run(self.output, feed_dict={self.context: [context_tokens]})
+            if 13 in out[0][-self.length:]:
+                break
+        output = self.enc.decode(out[0])
+        output = ".".join(output.split(".")[:-1]) + "."  # take only full sentences
+
+        #output = self.transl(output, False, self.lang_model, self.lang_target)
+        return output
+
+    def transl(self, input, array, lang_in, lang_out):
+        if array:
+            translation = []
+            for ele in input:
+                translation.append(self.translator.translate(ele, src=lang_in, dest=lang_out).text)
+        else:
+            translation = self.translator.translate(input, src=lang_in, dest=lang_out).text
+        return translation
+
+    def stop(self):
+        self.sess.close()
 
 if __name__ == '__main__':
     model = Model()
-    print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals"]))
+    start = time.time()
+    #print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals."]))    #a
+    #print(model.generate(["The C625AF camera", "five flash modes", "red-eye", "lens", "protected", "UV Filter.", "auto focus", "programmed shutter", "camera case"]))   #b
+    #print(model.generate(["If the viewfinder", "not sharp", "check", "eyepiece diopter adjustment", "knob", "near to the eyepiece.", "On-Off control", "button", "handgrip on the right", "thumb", "one press", "recording", "second", "stop."]))  #c
+    print(model.generate(["Im Jahr 1953", "MIT", "numerisch gesteuerte Werkzeugmaschine", "NC-Steuerungen", "Koordinatenbewegungen", "Produktionsmaschinen", "alphanumerische Informationen", "automatisch", "Informationen", "digitaler Form", "früher", "Lochstreifen", "heute", "Rechnerspeichermedien", "Server", "Nc-Steuerung", "decodiert", "Verfahrbewegungen", "Interpolation", "feine Schritte", "Sollwertsignale", "Bewegung der Achsen"]))
+    print(time.time()-start)

@@ -1,4 +1,4 @@
-#Strategie 1 Beam-Search
+#Strategie 1a Beam-Search
 from pytorch_transformers import GPT2Tokenizer, GPT2LMHeadModel
 import torch
 import random
@@ -8,7 +8,7 @@ class Model(object):
     def __init__(self,
                  model_name='117M',
                  seed=1,
-                 beam_width=20, beam_depth=4,
+                 beam_width=20, beam_depth=5,
                  lang_target='de'):
 
         self.model = GPT2LMHeadModel.from_pretrained('gpt2')
@@ -37,7 +37,7 @@ class Model(object):
         def beam_search(sent_ids, supp_id):
             beams = [sent_ids]
             i = 0
-            while len(beams) < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1):
+            while len(beams) < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1) and (time.time()-start < 300):
                 poss_ids = get_probs(beams[i])
                 for id in poss_ids:
                     # append new possible tokens to tokens along the path
@@ -56,21 +56,21 @@ class Model(object):
         sent_ids = torch.tensor(self.tokenizer.encode(input.pop(0))).unsqueeze(0)
         support = "a " + " ".join(input)
         supp_ids = self.tokenizer.encode(support)[1:]
-        while len(supp_ids) > 0:
-            #start = time.time()
+        while (len(supp_ids) > 0) and (time.time()-start < 300):
             res, sent_ids = beam_search(sent_ids, supp_ids[0])
-            #now = time.time()
             if res:
                 supp_ids.pop(0)
 
             #convert result from ids to string
-            #print(now-start)
             tokens = self.tokenizer.convert_ids_to_tokens(sent_ids.tolist()[0])
-            print(self.tokenizer.convert_tokens_to_string(tokens))
+        return self.tokenizer.convert_tokens_to_string(tokens)
 
 
 if __name__ == '__main__':
     model = Model()
-    #model.generate(["My Name is Harry", "Potter", "met", "Voldemort", "battle" ,"was", "strong", "Hospital"])
-    #model.generate(["The Institute for Controlling and Machine Tooling","University of Stuttgart","leader","on the field","Technology", "Production","Automation", "tomorrow", "innovative", "challenging","Product"])
-    model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals"])
+    start = time.time()
+    print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals."]))    #a
+    #print(model.generate(["The C625AF camera", "five flash modes", "red-eye", "lens", "protected", "UV Filter.", "auto focus", "programmed shutter", "camera case"]))   #b
+    #print(model.generate(["If the viewfinder", "not sharp", "check", "eyepiece diopter adjustment", "knob", "near to the eyepiece.", "On-Off control", "button", "handgrip on the right", "thumb", "one press", "recording", "second", "stop."]))  #c
+    print(time.time()-start)
+

@@ -6,6 +6,7 @@ import tensorflow as tf
 import torch
 from pytorch_pretrained_bert import BertTokenizer, BertModel, BertForMaskedLM
 import googletrans
+import time
 
 import sys
 sys.path.insert(0, '.\src')
@@ -36,11 +37,11 @@ class Model(object):
      overriding top_k if set to a value > 0. A good setting is 0.9.
     """
     def __init__(self,
-                 model_name='117M',
+                 model_name='ISW_Model',
                  seed=0,
-                 length=4, #5,
+                 length=3,
                  temperature=1,
-                 top_k=40, top_p=0,
+                 top_k=20, top_p=0,
                  lang_target='de'):
 
         self.enc = encoder.get_encoder(model_name)
@@ -71,10 +72,10 @@ class Model(object):
         saver.restore(self.sess, ckpt)
 
         # Load pre-trained model (weights)
-        self.model = BertForMaskedLM.from_pretrained('bert-base-cased')
+        self.model = BertForMaskedLM.from_pretrained('bert-base-german-cased')
         self.model.eval()
         # Load pre-trained model tokenizer (vocabulary)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-german-cased', do_lower_case=False)
 
     def generate(self, input):
 
@@ -129,4 +130,10 @@ class Model(object):
 
 if __name__ == '__main__':
     model = Model()
-    print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals"]))
+    start = time.time()
+    #print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals."]))    #a
+    #print(model.generate(["The C625AF camera", "five flash modes", "red-eye", "lens", "protected", "UV Filter.", "auto focus", "programmed shutter", "camera case"]))   #b
+    #print(model.generate(["If the viewfinder", "not sharp", "check", "eyepiece diopter adjustment", "knob", "near to the eyepiece.", "On-Off control", "button", "handgrip on the right", "thumb", "one press", "recording", "second", "stop."]))  #c
+    print(model.generate(["Im Jahre 1953", "MIT", "numerisch gesteuerte Werkzeugmaschine", "NC-Steuerungen", "Koordinatenbewegungen", "Produktionsmaschinen", "alphanumerische Informationen", "automatisch", "Informationen", "digitaler Form", "früher", "Lochstreifen", "heute", "Rechnerspeichermedien", "Server", "Nc-Steuerung", "decodiert", "Verfahrbewegungen", "Interpolation", "feine Schritte", "Sollwertsignale", "Bewegung der Achsen"]))
+
+    print(time.time()-start)
