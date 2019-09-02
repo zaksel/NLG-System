@@ -1,5 +1,10 @@
 from flask import Flask, request, redirect, Response, jsonify
-from generate_samples import Model
+import tensorflow as tf
+import generate_samples_s1a as s1a
+import generate_samples_s1b as s1b
+import generate_samples_s2 as s2
+import generate_samples_s3 as s3
+import generate_samples_s4 as s4
 
 app = Flask(__name__)
 
@@ -11,35 +16,23 @@ def output():
 
 @app.route('/input', methods=['POST'])
 def input():
-    global model
     data = request.get_json(force=True)
     print("Got Message from Word Add-In", data)
+
+    #start model
+    model = eval(data['settings']['strategy']).Model(model_name=data['settings']['model'],
+                  seed=int(data['settings']['seed']) if int(data['settings']['seed']) else None,
+                  length=int(data['settings']['len']),
+                  top_k=int(data['settings']['top_k']),
+                  lang_target=data['settings']['language'])
 
     #call generation of text
     output = model.generate(data['text'])
 
+    del model
+
     res = {"text": output}
     return jsonify(res)
-
-
-@app.route('/settings', methods=['POST'])
-def settings():
-    global model
-    data = request.get_json(force=True)
-    print("Got Settings from Word Add-In", data)
-
-    #start new model with given params
-    model.stop()
-    del model
-    model = Model(model_name=data['model'],
-                  seed=int(data['seed']) if int(data['seed']) else None,
-                  length=int(data['len']),
-                  temperature=float(data['temp']),
-                  top_p=float(data['top_p']),
-                  lang_target=data['language'])
-
-    res = jsonify(success=True)
-    return res
 
 
 #add response headers into our response
@@ -50,5 +43,4 @@ def add_headers(response):
     return response
 
 if __name__ == '__main__':
-    model = Model()
     app.run(host='127.0.0.1', port=5000)
