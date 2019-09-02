@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {PrimaryButton, TextField, Spinner} from 'office-ui-fabric-react';
+import {Settings, set_var} from "./Settings";
+
 
 let input_text = "";
 export default class Content extends React.Component {
@@ -7,11 +9,11 @@ export default class Content extends React.Component {
         return Word.run(async context => {
 
             let input = input_text.split("⚫");
-            if (input.length < 2) {
+            if (input.length < 1) {
                 document.getElementById("input").value = "Please enter Words that support your text divided by Tabstopps!"
             }
             else{
-                let data = {"text":input};
+                let data = {"text":input, "settings":set_var};
                 //send the data to backend
                 $.ajax({
                     type: "POST",
@@ -41,18 +43,20 @@ export default class Content extends React.Component {
         });
     };
 
+    replace_tabs(e) {
+        if (e.keyCode == 9) {
+            e.preventDefault();
+            let cursor_pos = e.target.selectionStart;
+            let text = document.getElementById('input').value;
+            document.getElementById('input').value = text.slice(0,cursor_pos) + " ⚫ " + text.slice(cursor_pos);
+        }
+    }
+
     render() {
-        //handle input in textfield, replace tabs
-        $('.tdtg-content__input').on('keydown', function(e) {
-            if (e.keyCode == 9) {
-                e.preventDefault();
-                document.getElementById('input').value=document.getElementById('input').value + " ⚫ ";
-             }
-        });
 
         return(
             <div class="ms-welcome__main">
-                <TextField className='tdtg-content__input' id="input" multiline resizable={false} rows={29} defaultValue={input_text} onChanged={newValue => (input_text=newValue)}/>
+                <TextField className='tdtg-content__input' id="input" multiline resizable={false} rows={29} defaultValue={input_text} onKeyDown={e => this.replace_tabs(e)} onChanged={newValue => (input_text=newValue)}/>
                 <PrimaryButton className='tdtg-content__button' id='button' iconProps={{ iconName: 'ChevronRight'}} onClick={this.click}>Generate!</PrimaryButton>
                 <Spinner className='tdtg-content__spinner' id='spinner' label=" Thinking..." labelPosition="right" />
             </div>

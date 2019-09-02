@@ -25,7 +25,7 @@ export default class Instructions extends React.Component {
 
                 <h2>About the settings</h2>
                 <p>
-                    You can change the Language Model used by gpt-2.
+                    You can change the Language Model used by gpt-2. And also the strategy to connect your support words.
                 </p>
                 </Label>
             </div>
