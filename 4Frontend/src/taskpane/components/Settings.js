@@ -11,7 +11,7 @@ let set_var = {
     beam_width: 20,
     beam_depth: 5,
     scope: 6,
-    timeout: "None"
+    timeout: null
 };
 
 export default class Settings extends React.Component {
@@ -105,7 +105,7 @@ export default class Settings extends React.Component {
                                }}
                                onDecrement={(value) => {
                                    if (value === "0") {
-                                       set_var.seed = "None";
+                                       set_var.seed = null;
                                        return "None"
                                    }
                                    if (value == 1) {
@@ -241,7 +241,7 @@ export default class Settings extends React.Component {
                                onDecrement={(value) => {
                                    value = parseInt(value);
                                    if (value == 10) {
-                                       set_var.timeout = "None";
+                                       set_var.timeout = null;
                                        return "None"
                                    } else {
                                        value = value - 10;
