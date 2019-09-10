@@ -20,17 +20,20 @@ def input():
     print("Got Message from Word Add-In", data)
 
     #start model
-    model = eval(data['settings']['strategy']).Model(model_name=data['settings']['model'],
-                  seed=int(data['settings']['seed']) if int(data['settings']['seed']) else None,
-                  length=int(data['settings']['len']),
-                  top_k=int(data['settings']['top_k']),
-                  lang_target=data['settings']['language'])
+    model = eval(data['settings']['strategy']).Model(
+                                                model_name=data['settings']['model'],
+                                                seed=data['settings']['seed'],
+                                                length=data['settings']['len'],
+                                                top_k=data['settings']['top_k'],
+                                                lang_target=data['settings']['language'],
+                                                beam_width=data['settings']['beam_width'],
+                                                beam_depth=data['settings']['beam_depth'],
+                                                scope=data['settings']['scope'],
+                                                timeout=data['settings']['timeout'])
 
     #call generation of text
     output = model.generate(data['text'])
-
-    del model
-
+    #del model
     res = {"text": output}
     return jsonify(res)
 
