@@ -7,7 +7,6 @@ let input_text = "";
 export default class Content extends React.Component {
     click = async () => {
         return Word.run(async context => {
-
             let input = input_text.split("⚫");
             if (input.length < 1) {
                 document.getElementById("input").value = "Please enter Words that support your text divided by Tabstopps!"
@@ -44,12 +43,13 @@ export default class Content extends React.Component {
     };
 
     replace_tabs(e) {
-        if (e.keyCode == 9) {
+        if (e.keyCode === 9) {
             e.preventDefault();
             let cursor_pos = e.target.selectionStart;
-            let text = document.getElementById('input').value;
-            document.getElementById('input').value = text.slice(0,cursor_pos) + " ⚫ " + text.slice(cursor_pos);
+            let text = document.getElementById('input').textContent;
+            document.getElementById('input').textContent = text.slice(0,cursor_pos) + " ⚫ " + text.slice(cursor_pos);
         }
+        input_text = document.getElementById('input').textContent
     }
 
     render() {
