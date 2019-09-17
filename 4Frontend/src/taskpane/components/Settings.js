@@ -4,7 +4,7 @@ import {Label, Dropdown, SpinButton, PrimaryButton} from 'office-ui-fabric-react
 let set_var = {
     strategy: 's3',
     model: '117M',
-    language: 'de',
+    language: null,
     len: 5,
     seed: 0,
     top_k: 40,
@@ -58,10 +58,10 @@ export default class Settings extends React.Component {
                              disabled={!this.state.model}/></p>
                 <p><Dropdown id='language' label="Output language"
                              onChanged={(option) => {set_var.language = option.key}}
-                             options={[{key: 'None', text: 'None'}, {key: 'en', text: 'en'}, {
-                                 key: 'de',
-                                 text: 'de'
-                             }, {key: 'fra', text: 'fra'}]}
+                             options={[{key: null, text: 'No Translation'},
+                                 {key: 'en', text: 'en'},
+                                 {key: 'de', text: 'de'},
+                                 {key: 'fr', text: 'fr'}]}
                              defaultSelectedKey={set_var.language}
                              disabled={!this.state.language}/></p>
                 <p><SpinButton id='len' label={'length:'}
