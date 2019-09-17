@@ -32,7 +32,9 @@ class Model(object):
         self.output = sample.sample_sequence(
             hparams=hparams, length=length,
             context=self.context,
-            top_k=top_k
+            batch_size=1,
+            temperature=1,
+            top_k=top_k, top_p=0
         )
 
         # restore transformer model from last checkpoint
