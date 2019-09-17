@@ -7,7 +7,7 @@ let input_text = "";
 export default class Content extends React.Component {
     click = async () => {
         return Word.run(async context => {
-            let input = input_text.split("⚫");
+            let input = input_text.split(/ ⚫ | ⚫|⚫ |⚫/);
             if (input.length < 1) {
                 document.getElementById("input").value = "Please enter Words that support your text divided by Tabstopps!"
             }
