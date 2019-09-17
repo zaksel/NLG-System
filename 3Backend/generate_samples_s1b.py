@@ -5,19 +5,15 @@ import random
 import time
 
 class Model(object):
-    def __init__(self,
-                 model_name='117M',
-                 seed=1,
-                 beam_width=40, beam_depth=5, scope=6,
-                 lang_target='de'):
+    def __init__(self, **kwargs):
+        self.beam_width = kwargs['beam_width']
+        self.beam_depth = kwargs['beam_depth']
+        self.scope = kwargs['scope']
+        self.timeout = kwargs['timeout']
+        random.seed = kwargs['seed']
 
         self.model = GPT2LMHeadModel.from_pretrained('gpt2')
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-
-        self.beam_width = beam_width
-        self.beam_depth = beam_depth
-        self.scope = scope
-        random.seed = seed
 
     #gets array of words and performs beam search to connect them
     def generate(self, input):
@@ -37,7 +33,7 @@ class Model(object):
         def beam_search(sent_ids, supp_id):
             beams = [sent_ids]
             i = 0
-            while len(beams) < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1) and (time.time()-start < 600):
+            while len(beams) < (self.beam_width ** self.beam_depth - 1) / (self.beam_width - 1) and (time.time()-start < self.timeout):
                 poss_ids = get_probs(beams[i])
                 for id in poss_ids:
                     # append new possible tokens to tokens along the path
@@ -52,13 +48,23 @@ class Model(object):
             print("Support not found: Do random Step")
             return 0, beams[random.randrange(i)]
 
+        def merge(a, b):
+            max_offset = len(b)  # can't overlap with greater size than len(b)
+            for i in reversed(range(max_offset + 1)):
+                # checks for equivalence of decreasing sized slices
+                if a[-i:] == b[:i]:
+                    break
+            return a + b[i:]
 
+        start = time.time()
+        if not self.timeout:
+            self.timeout = float("inf")
+
+        tokens = []
         sent_ids = torch.tensor(self.tokenizer.encode(input.pop(0))).unsqueeze(0)
         support = "a " + " ".join(input)
         supp_ids = self.tokenizer.encode(support)[1:]
-        while len(supp_ids) > 0 and (time.time()-start < 600):
-            #start = time.time()
-
+        while len(supp_ids) > 0 and (time.time()-start < self.timeout):
             #move scope/window
             if sent_ids.size(1) > self.scope:
                 scope_ids = sent_ids.narrow_copy(1, sent_ids.size(1)-self.scope, self.scope)
@@ -68,19 +74,9 @@ class Model(object):
             res, sent_ids = beam_search(scope_ids, supp_ids[0])
             if res:
                 supp_ids.pop(0)
-                # now = time.time()
 
-            #print(now-start)
+            #convert result from ids to string and merge scope window to resulting tokens
+            new_tokens = self.tokenizer.convert_ids_to_tokens(sent_ids.tolist()[0])
+            tokens = merge(tokens,new_tokens)
 
-            #convert result from ids to string
-            tokens = self.tokenizer.convert_ids_to_tokens(sent_ids.tolist()[0])
-            print(self.tokenizer.convert_tokens_to_string(tokens))
-
-
-if __name__ == '__main__':
-    model = Model()
-    start = time.time()
-    #print(model.generate(["Push the button", "right", "activate", "camera", "pictures", "family", "animals."]))    #a
-    #print(model.generate(["The C625AF camera", "five flash modes", "red-eye", "lens", "protected", "UV Filter.", "auto focus", "programmed shutter", "camera case"]))   #b
-    print(model.generate(["If the viewfinder", "not sharp", "check", "eyepiece diopter adjustment", "knob", "near to the eyepiece.", "On-Off control", "button", "handgrip on the right", "thumb", "one press", "recording", "second", "stop."]))  #c
-    print(time.time()-start)
+        return self.tokenizer.convert_tokens_to_string(tokens)

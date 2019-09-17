@@ -6,23 +6,14 @@ import time
 
 
 class Model(object):
-    def __init__(self,
-                 model_name='117M',
-                 seed=0,
-                 length=20,
-                 temperature=1,
-                 top_k=40,
-                 beam_width=20, beam_depth=5, scope=0,
-                 timeout=None,
-                 lang_target='de'):
+    def __init__(self, **kwargs):
+        self.beam_width = kwargs['beam_width']
+        self.beam_depth = kwargs['beam_depth']
+        self.timeout = kwargs['timeout']
+        random.seed = kwargs['seed']
 
         self.model = GPT2LMHeadModel.from_pretrained('gpt2')
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
-
-        self.beam_width = beam_width
-        self.beam_depth = beam_depth
-        self.timeout = timeout
-        random.seed = seed
 
     def generate(self, input):
 

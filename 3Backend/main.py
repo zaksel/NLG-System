@@ -20,7 +20,7 @@ def input():
     print("Got Message from Word Add-In", data)
 
     """
-    start session
+    start session with the following Keyword Arguments(kwargs)
     strategy=[s1a,s1b,s2,s3,s4] :   Specify Strategy to connect supporting words one out of
                                     [Beam-Search, Beam-Search(Scope), Search until fit, Cut-off and insert, BERT-GPT2 Hybrid]
     model_name=[117M,ISW_Model]:    String, which model to use
@@ -34,16 +34,7 @@ def input():
     scope :                         Scope for s1b
     timeout :                       Set a timeout if you use strategy s1a,s1b or s2 to stop process after time
     """
-    model = eval(data['settings']['strategy']).Model(
-                                                model_name=data['settings']['model'],
-                                                seed=data['settings']['seed'],
-                                                length=data['settings']['len'],
-                                                top_k=data['settings']['top_k'],
-                                                lang_target=data['settings']['language'],
-                                                beam_width=data['settings']['beam_width'],
-                                                beam_depth=data['settings']['beam_depth'],
-                                                scope=data['settings']['scope'],
-                                                timeout=data['settings']['timeout'])
+    model = eval(data['settings']['strategy']).Model(**data['settings'])
 
     #call generation of text
     output = model.generate(data['text'])
