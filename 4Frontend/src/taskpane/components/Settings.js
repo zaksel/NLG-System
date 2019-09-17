@@ -14,29 +14,29 @@ let set_var = {
     timeout: 120
 };
 
+let views = {
+    s1a: {model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: false, timeout: true},
+    s1b: {model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: true, timeout: true},
+    s2: {model: true, language: false, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: true},
+    s34: {model: true, language: true, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false}
+};
+
 export default class Settings extends React.Component {
     constructor() {
-        super();
-        this.state = {model: true, language: true, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false};
+        super(self);
+        if (set_var.strategy === "s1a") {this.state = views.s1a;}
+        if (set_var.strategy === "s1b") {this.state = views.s1b;}
+        if (set_var.strategy === "s2") {this.state = views.s2;}
+        if (set_var.strategy === ("s3" || "s4")) {this.state = views.s34;}
         this.change_view = this.change_view.bind(this);
     }
 
     change_view(strategy) {
         set_var.strategy = strategy;
-        if (strategy === "s1a") {
-            this.setState({model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: false, timeout: true});
-        }
-        if (strategy === "s1b") {
-            this.setState({model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: true, timeout: true});
-        }
-        if (strategy === "s2") {
-            this.setState({model: true, language: false, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: true});
-        }
-        if (strategy === ("s3" || "s4")) {
-            this.setState({model: true, language: true, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false});
-        }
-
-
+        if (strategy === "s1a") {this.setState(views.s1a);}
+        if (strategy === "s1b") {this.setState(views.s1b);}
+        if (strategy === "s2") {this.setState(views.s2);}
+        if (strategy === ("s3" || "s4")) {this.setState(views.s34);}
     }
 
     render() {
