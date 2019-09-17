@@ -19,7 +19,21 @@ def input():
     data = request.get_json(force=True)
     print("Got Message from Word Add-In", data)
 
-    #start model
+    """
+    start session
+    strategy=[s1a,s1b,s2,s3,s4] :   Specify Strategy to connect supporting words one out of
+                                    [Beam-Search, Beam-Search(Scope), Search until fit, Cut-off and insert, BERT-GPT2 Hybrid]
+    model_name=[117M,ISW_Model]:    String, which model to use
+    seed=None :                     Integer seed for random number generators, fix seed to reproduce results
+    length=None :                   Number of tokens in generated text
+    top_k=0 :                       Count of Tokens considered for each step (Probability Distribution)
+    language :                      Language in which the support words are given, equal to output language
+                                    set to None if no translation required
+    beam_width :                    Beamwidth for strategy s1a or s1b
+    beam_depth :                    Beamdepth for strategy s1a or s1b
+    scope :                         Scope for s1b
+    timeout :                       Set a timeout if you use strategy s1a,s1b or s2 to stop process after time
+    """
     model = eval(data['settings']['strategy']).Model(
                                                 model_name=data['settings']['model'],
                                                 seed=data['settings']['seed'],
