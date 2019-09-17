@@ -84,7 +84,7 @@ export default class Settings extends React.Component {
                                    }
                                }}
                                onValidate={(value) => {
-                                   set_var.len = value;
+                                   set_var.len = parseInt(value);
                                    return value
                                }}/></p>
                 <p><SpinButton id='seed' label={'seed:'}
@@ -119,7 +119,7 @@ export default class Settings extends React.Component {
                                }}
                                onValidate={(value) => {
                                    if ((value % 1 == 0 && value > 0) || value === "None") {
-                                       set_var.seed = value;
+                                       set_var.seed = parseInt(value);
                                        return value
                                    }
                                    return set_var.seed
@@ -144,7 +144,7 @@ export default class Settings extends React.Component {
                                }}
                                onValidate={(value) => {
                                    if (value % 1 === 0 && value > 0) {
-                                       set_var.top_k = value;
+                                       set_var.top_k = parseInt(value);
                                        return value
                                    }
                                    return set_var.top_k
@@ -169,7 +169,7 @@ export default class Settings extends React.Component {
                                }}
                                onValidate={(value) => {
                                    if (value % 1 === 0 && value > 0) {
-                                       set_var.beam_width = value;
+                                       set_var.beam_width = parseInt(value);
                                        return value
                                    }
                                    return set_var.beam_width
@@ -188,7 +188,7 @@ export default class Settings extends React.Component {
                                    value = parseInt(value);
                                    if (value > 0) {
                                        value = value - 1;
-                                       set_var.beam_depth = value
+                                       set_var.beam_depth = parseInt(value);
                                    }
                                    return value;
                                }}
@@ -219,7 +219,7 @@ export default class Settings extends React.Component {
                                }}
                                onValidate={(value) => {
                                    if (value % 1 === 0 && value > 0) {
-                                       set_var.scope = value;
+                                       set_var.scope = parseInt(value);
                                        return value
                                    }
                                    return set_var.scope
@@ -245,13 +245,13 @@ export default class Settings extends React.Component {
                                        return "None"
                                    } else {
                                        value = value - 10;
-                                       set_var.timeout = value
+                                       set_var.timeout = parseInt(value);
                                    }
                                    return value;
                                }}
                                onValidate={(value) => {
                                    if ((value % 10 === 0 && value > 0) || value === "None") {
-                                       set_var.timeout = value;
+                                       set_var.timeout = parseInt(value);
                                        return value
                                    }
                                    return set_var.timeout
