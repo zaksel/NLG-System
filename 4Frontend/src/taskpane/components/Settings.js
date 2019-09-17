@@ -17,23 +17,23 @@ let set_var = {
 export default class Settings extends React.Component {
     constructor() {
         super();
-        this.state = {len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false};
+        this.state = {model: true, language: true, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false};
         this.change_view = this.change_view.bind(this);
     }
 
     change_view(strategy) {
         set_var.strategy = strategy;
         if (strategy === "s1a") {
-            this.setState({len: false, top_k: false, beam_width: true, beam_depth: true, scope: false, timeout: true});
+            this.setState({model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: false, timeout: true});
         }
         if (strategy === "s1b") {
-            this.setState({len: false, top_k: false, beam_width: true, beam_depth: true, scope: true, timeout: true});
+            this.setState({model: false, language: false, len: false, top_k: false, beam_width: true, beam_depth: true, scope: true, timeout: true});
         }
         if (strategy === "s2") {
-            this.setState({len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: true});
+            this.setState({model: true, language: false, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: true});
         }
         if (strategy === ("s3" || "s4")) {
-            this.setState({len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false});
+            this.setState({model: true, language: true, len: true, top_k: true, beam_width: false, beam_depth: false, scope: false, timeout: false});
         }
 
 
@@ -51,19 +51,19 @@ export default class Settings extends React.Component {
                                  text: 'Cut-off and Insert'
                              }, {key: 's4', text: 'BERT-GPT2 Hybrid'}]}
                              defaultSelectedKey={set_var.strategy}/></p>
-                <p><Dropdown id='model' label="Choose a language model" onChanged={(option) => {
-                    set_var.model = option.key
-                }}
+                <p><Dropdown id='model' label="Choose a language model"
+                             onChanged={(option) => {set_var.model = option.key}}
                              options={[{key: '117M', text: '117M'}, {key: 'ISW_Model', text: 'ISW_Model'}]}
-                             defaultSelectedKey={set_var.model}/></p>
-                <p><Dropdown id='language' label="Output language" onChanged={(option) => {
-                    set_var.language = option.key
-                }}
+                             defaultSelectedKey={set_var.model}
+                             disabled={!this.state.model}/></p>
+                <p><Dropdown id='language' label="Output language"
+                             onChanged={(option) => {set_var.language = option.key}}
                              options={[{key: 'None', text: 'None'}, {key: 'en', text: 'en'}, {
                                  key: 'de',
                                  text: 'de'
                              }, {key: 'fra', text: 'fra'}]}
-                             defaultSelectedKey={set_var.language}/></p>
+                             defaultSelectedKey={set_var.language}
+                             disabled={!this.state.language}/></p>
                 <p><SpinButton id='len' label={'length:'}
                                styles={{label: {width: 100}}}
                                disabled={!this.state.len}
