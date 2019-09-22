@@ -27,7 +27,7 @@ export default class Settings extends React.Component {
         if (set_var.strategy === "s1a") {this.state = views.s1a;}
         if (set_var.strategy === "s1b") {this.state = views.s1b;}
         if (set_var.strategy === "s2") {this.state = views.s2;}
-        if (set_var.strategy === ("s3" || "s4")) {this.state = views.s34;}
+        if (set_var.strategy === "s3" || set_var.strategy === "s4") {this.state = views.s34;}
         this.change_view = this.change_view.bind(this);
     }
 
@@ -36,20 +36,20 @@ export default class Settings extends React.Component {
         if (strategy === "s1a") {this.setState(views.s1a);}
         if (strategy === "s1b") {this.setState(views.s1b);}
         if (strategy === "s2") {this.setState(views.s2);}
-        if (strategy === ("s3" || "s4")) {this.setState(views.s34);}
+        if (strategy === "s3" || strategy === "s4") {this.setState(views.s34);}
     }
 
     render() {
         return (
             <div className='tdtg-settings__elements'>
                 <p><Dropdown id='strategy' label="Choose a Strategy" onChanged={option => this.change_view(option.key)}
-                             options={[{key: 's1a', text: 'Beam-Search'}, {
-                                 key: 's1b',
-                                 text: 'Beam-Search (Scope)'
-                             }, {key: 's2', text: 'Search until fit'}, {
-                                 key: 's3',
-                                 text: 'Cut-off and Insert'
-                             }, {key: 's4', text: 'BERT-GPT2 Hybrid'}]}
+                             options={[
+                                 {key: 's1a', text: 'Beam-Search'},
+                                 {key: 's1b', text: 'Beam-Search (Scope)'},
+                                 {key: 's2', text: 'Search until fit'},
+                                 {key: 's3', text: 'Cut-off and Insert'},
+                                 {key: 's4', text: 'BERT-GPT2 Hybrid'}
+                                 ]}
                              defaultSelectedKey={set_var.strategy}/></p>
                 <p><Dropdown id='model' label="Choose a language model"
                              onChanged={(option) => {set_var.model = option.key}}
