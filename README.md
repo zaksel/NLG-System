@@ -60,7 +60,26 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
 
 </details>
 
-## Backend (based on OpenAi)
+## Backend (based on OpenAi GPT-2)
+<details>
+<summary>See what the Backend does</summary>
+
+[Uses Huggingface pytorch-Transformer](https://huggingface.co/transformers/index.html)
+
+Communicates with Frontend via REST-API on Flask server.  
+Receives supporting Words which the Text should contain and Settings from User-Input in Frontend.
+
+Implements 4 different Strategies to build Text from given supporting Words:
+
+
+>1a. Beam-Search  
+>1b. Beam-Search with Scope  
+>2.Search until fit  
+>3.Cut-off and insert  
+>4.BERT-GPT2 Hybrid
+
+For Details see paper.
+</details>
 
 ## Frontend
 <details>
@@ -68,7 +87,7 @@ If you don't want to encode your Trainingdata on every run, you can save it enco
 
 Generated with Yeoman-Generator for Office-Add-ins
 
-Edit React App in 4Frontend/src/taskpane/components
+For changes edit React App in 4Frontend/src/taskpane/components
 
 To sideload your Add-In in Word use the following command inside of directory 4Frontend
 > npm start
